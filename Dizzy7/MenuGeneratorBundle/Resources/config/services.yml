@@ -1,0 +1,5 @@
+services:
+#    menu_build:
+#        class: dizzy7\AutoMenuBundle\Menu\MenuBuilder
+#        tags: [{name:kernel.event_listener,event: kernel.request,method:onRequest}]
+#        arguments: [@service_container]

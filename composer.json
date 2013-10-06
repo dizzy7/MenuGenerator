@@ -1,0 +1,22 @@
+{
+    "name": "dizzy7/MenuGenerator",
+    "type": "library",
+    "description": "Generate menu from controller/action annotations",
+    "keywords" : ["symfony2","menu","annotations"],
+    "authors": [
+        {
+            "name": "Dizzy",
+            "email": "7dizzy7@gmail.com"
+        }
+    ],
+    "license" : "MIT",
+    "require" : {
+        "php" : ">=5.3.3",
+        "symfony/symfony" : ">=2.3",
+        "doctrine/orm" : ">=2.3",
+        "knplabs/knp-menu-bundle" : "1.1.*"
+    },
+    "autoload" : {
+        "psr-0" : { "Dizzy7\\MenuGeneratorBundle": "" }
+    }
+}
