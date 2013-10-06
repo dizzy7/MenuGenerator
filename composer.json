@@ -1,5 +1,5 @@
 {
-    "name": "dizzy7/MenuGenerator",
+    "name": "dizzy7/menu-generator",
     "type": "library",
     "description": "Generate menu from controller/action annotations",
     "keywords" : ["symfony2","menu","annotations"],
