@@ -54,16 +54,16 @@ app/console doctrine:schema:update --force
 
 <pre>
 use ...
-use Dizzy7\MenuGeneratorBundle\Menu\Mapping as Menu;
+use Dizzy7\MenuGeneratorBundle\Menu\Mapping\Menu;
 
 /**
- * @Menu\Controller(name="Раздел меню")
+ * @Menu(name="Раздел меню")
  */
 class SampleController extends Controller
 {
 
     /**
-     * @Menu\Action(name="Строка меню 1")
+     * @Menu(name="Строка меню 1")
      */
     public function indexAction()
     {
@@ -71,7 +71,7 @@ class SampleController extends Controller
     }
     
     /**
-     * @Menu\Action(name="Строка меню 2")
+     * @Menu(name="Строка меню 2")
      */
     public function otherAction()
     {
