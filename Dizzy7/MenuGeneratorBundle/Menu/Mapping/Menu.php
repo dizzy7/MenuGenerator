@@ -9,11 +9,13 @@ class Menu {
 
     private $name;
     private $sort;
+    private $type;
 
     public function __construct($metadata = array())
     {
         $this->name = (isset($metadata['name']) && $metadata['name'] != '') ? $metadata['name'] : null;
         $this->sort = (isset($metadata['sort']) && $metadata['sort'] != '') ? $metadata['sort'] : null;
+        $this->type = (isset($metadata['sort']) && $metadata['sort'] != '') ? $metadata['sort'] : 'default';
     }
 
     /**
@@ -33,6 +35,14 @@ class Menu {
     public function getSort()
     {
         return $this->sort;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
     }
 
 } 

@@ -9,6 +9,7 @@
 namespace Dizzy7\MenuGeneratorBundle\Command;
 
 use Dizzy7\MenuGeneratorBundle\Entity\Menu;
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 use InvalidArgumentException;
@@ -147,6 +148,12 @@ class GenerateMenuCommand extends Command implements ContainerAwareInterface {
             }
         }
         $em->flush();
+
+        $cache = $em->getConfiguration()->getResultCacheImpl();
+        if($cache->delete('dizzy7_menu')){
+            $output->writeln('Cache cleared');
+        }
+
         $output->writeln('Menu updated!');
     }
 

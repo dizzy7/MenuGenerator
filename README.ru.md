@@ -46,6 +46,13 @@ class AppKernel extends Kernel
 <pre>
 app/console doctrine:schema:update --force
 </pre>
+
+В конфигурации приложения при необходимости можно включить кэширование
+<pre>
+# app/config/config.yml
+dizzy7_menu_generator:
+    cache: true
+</pre>
     
 Использование
 -------------
