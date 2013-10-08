@@ -11,6 +11,7 @@ namespace Dizzy7\MenuGeneratorBundle\Command;
 use Dizzy7\MenuGeneratorBundle\Entity\Menu;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
+use InvalidArgumentException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -63,7 +64,7 @@ class GenerateMenuCommand extends Command implements ContainerAwareInterface {
         $this->routeCollection = $router->getRouteCollection();
 
         $output->writeln('Truncate menu table');
-        $className = "dizzy7\\AutoMenuBundle\\Entity\\Menu";
+        $className = "Dizzy7\\MenuGeneratorBundle\\Entity\\Menu";
         /** @var $em EntityManager */
         $em = $this->container->get('doctrine')->getManager();
         $cmd = $em->getClassMetadata($className);
@@ -94,52 +95,53 @@ class GenerateMenuCommand extends Command implements ContainerAwareInterface {
         $em = $this->container->get('doctrine')->getManager();
 
         foreach ($bundles as $bundleName) {
-            if(!preg_match('#^Snews#',$bundleName)){
-                continue;
-            }
             /** @var $bundle Bundle */
-            $bundle  = new $bundleName;
+            $reflection = new \ReflectionClass($bundleName);
             $bundleNamespace = preg_replace('/^(.*\\\\).*/','$1',$bundleName);
-            $controllersPath = $bundle->getPath().'/Controller';
+            $bundlePath = preg_replace('/^(.*\\/).*/','$1',$reflection->getFileName());
+            $controllersPath = $bundlePath.'Controller';
             $finder = new Finder();
-            $controllersFile = $finder->files()->in($controllersPath)->getIterator();
-            /** @var $controllersFile SplFileInfo[] */
-            foreach ($controllersFile as $controllerFile) {
-                $path = pathinfo($controllerFile->getRealPath());
+            try {
+                $controllerFiles = $finder->files()->in($controllersPath);
+                /** @var $controllerFile SplFileInfo */
+                foreach ($controllerFiles->getIterator() as $controllerFile) {
+                    $path = pathinfo($controllerFile->getRealPath());
 
-                $reflectionClass = new \ReflectionClass($bundleNamespace."Controller\\".$path['filename']);
+                    $reflectionClass = new \ReflectionClass($bundleNamespace."Controller\\".$path['filename']);
 
-                $annotation = $reader->getClassAnnotation($reflectionClass,'dizzy7\\AutoMenuBundle\\Menu\\Mapping\\Controller');
+                    $annotation = $reader->getClassAnnotation($reflectionClass,'Dizzy7\\MenuGeneratorBundle\\Menu\\Mapping\\Menu');
 
-                if($annotation === null){
-                    continue;
-                }
-                $output->writeln($annotation->getName());
-
-                $topMenu = new Menu();
-
-                $topMenu->setName($annotation->getName());
-                $em->persist($topMenu);
-
-                $reflectionMethods = $reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC);
-                foreach ($reflectionMethods as $method) {
-                    if(!preg_match('/Action$/',$method->getName())){
+                    if($annotation === null){
                         continue;
                     }
-                    $annotation = $reader->getMethodAnnotation($method,'dizzy7\\AutoMenuBundle\\Menu\\Mapping\\Action');
-                    if($annotation!==null){
-                        $menuItem = new Menu();
-                        $menuItem->setName($annotation->getName());
-                        $menuItem->setParent($topMenu);
-                        $menuItem->setPath($this->findPathByAction($reflectionClass->getName(),$method->getName()));
-                        $output->writeln($annotation->getName());
-                        $em->persist($menuItem);
+                    $output->writeln($annotation->getName());
+
+                    $topMenu = new Menu();
+
+                    $topMenu->setName($annotation->getName());
+                    $em->persist($topMenu);
+
+                    $reflectionMethods = $reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC);
+                    foreach ($reflectionMethods as $method) {
+                        if(!preg_match('/Action$/',$method->getName())){
+                            continue;
+                        }
+                        $annotation = $reader->getMethodAnnotation($method,'Dizzy7\\MenuGeneratorBundle\\Menu\\Mapping\\Menu');
+                        if($annotation!==null){
+                            $menuItem = new Menu();
+                            $menuItem->setName($annotation->getName());
+                            $menuItem->setParent($topMenu);
+                            $menuItem->setPath($this->findPathByAction($reflectionClass->getName(),$method->getName()));
+                            $output->writeln($annotation->getName());
+                            $em->persist($menuItem);
+                        }
+
                     }
 
                 }
+            } catch (InvalidArgumentException $e){
 
             }
-
         }
         $em->flush();
         $output->writeln('Menu updated!');

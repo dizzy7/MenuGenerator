@@ -5,7 +5,7 @@ use Doctrine\Common\Annotations\AnnotationException;
 /**
  * @Annotation
  */
-class Controller {
+class Menu {
 
     private $name;
 
