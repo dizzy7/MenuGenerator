@@ -119,6 +119,7 @@ class GenerateMenuCommand extends Command implements ContainerAwareInterface {
                     $topMenu = new Menu();
 
                     $topMenu->setName($annotation->getName());
+                    $topMenu->setSort($annotation->getSort());
                     $em->persist($topMenu);
 
                     $reflectionMethods = $reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC);
@@ -126,12 +127,14 @@ class GenerateMenuCommand extends Command implements ContainerAwareInterface {
                         if(!preg_match('/Action$/',$method->getName())){
                             continue;
                         }
+                        /** @var $annotation Menu */
                         $annotation = $reader->getMethodAnnotation($method,'Dizzy7\\MenuGeneratorBundle\\Menu\\Mapping\\Menu');
                         if($annotation!==null){
                             $menuItem = new Menu();
                             $menuItem->setName($annotation->getName());
                             $menuItem->setParent($topMenu);
                             $menuItem->setPath($this->findPathByAction($reflectionClass->getName(),$method->getName()));
+                            $menuItem->setSort($annotation->getSort());
                             $output->writeln($annotation->getName());
                             $em->persist($menuItem);
                         }

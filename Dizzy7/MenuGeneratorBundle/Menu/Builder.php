@@ -20,6 +20,8 @@ class Builder extends ContainerAware {
             ->from('Dizzy7\MenuGeneratorBundle\Entity\Menu','m')
             ->leftJoin('m.children','c')
             ->where('m.parent IS NULL')
+            ->orderBy('m.sort','asc')
+            ->orderBy('c.sort','asc')
             ->getQuery()
             ->getResult(AbstractQuery::HYDRATE_ARRAY)
         ;

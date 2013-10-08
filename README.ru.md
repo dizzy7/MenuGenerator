@@ -57,13 +57,13 @@ use ...
 use Dizzy7\MenuGeneratorBundle\Menu\Mapping\Menu;
 
 /**
- * @Menu(name="Раздел меню")
+ * @Menu(name="Раздел меню",sort="10")
  */
 class SampleController extends Controller
 {
 
     /**
-     * @Menu(name="Строка меню 1")
+     * @Menu(name="Строка меню 2",sort="20")
      */
     public function indexAction()
     {
@@ -71,7 +71,7 @@ class SampleController extends Controller
     }
     
     /**
-     * @Menu(name="Строка меню 2")
+     * @Menu(name="Строка меню 1",sort="10")
      */
     public function otherAction()
     {
